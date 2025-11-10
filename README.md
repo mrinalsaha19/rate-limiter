@@ -1,3 +1,8 @@
+#                                                               DESIGN
+<img width="900" height="566" alt="image" src="https://github.com/user-attachments/assets/debbef11-9ee1-484f-8f49-f7c6469bace7" />
+
+
+
 # Run Redis
 - docker run --name redis-local -p 6379:6379 -d redis:latest
 # Run zookeeper and kafka server
