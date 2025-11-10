@@ -1,5 +1,6 @@
 #                                                               DESIGN
-<img width="900" height="566" alt="image" src="https://github.com/user-attachments/assets/debbef11-9ee1-484f-8f49-f7c6469bace7" />
+<img width="837" height="522" alt="image" src="https://github.com/user-attachments/assets/ca57bd27-cabe-4d83-9d43-86e158ee4a01" />
+
 
 
 
