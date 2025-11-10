@@ -11,8 +11,9 @@
 - In window of 10 seconds, only 200 apis are accepted for processing. The rest are deffered and published to a deffered topic for later processing with scheduler.
 
 for i in $(seq 1 7); do
-  curl -s -X POST "http://localhost:8080/events?key=user123" \
+  curl -s -X POST "http://localhost:8080/events" \
   -H "Content-Type: application/json" \
   -d "{\"id\": $i}"
   echo
 done
+
