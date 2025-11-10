@@ -12,7 +12,7 @@ Usage of global redis key to ensure same hashing. This helps acheving global rat
 
 # Run Redis
 - docker run --name redis-local -p 6379:6379 -d redis:latest
-# Run zookeeper and kafka server
+- Run zookeeper and kafka server
 # EndPoint to simulate
 - In window of 10 seconds, only 200 apis are accepted for processing. The rest are deffered and published to a deffered topic for later processing with scheduler.
 
