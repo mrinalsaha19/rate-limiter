@@ -1,5 +1,11 @@
-#                                                               DESIGN
+#                                                               DESIGN - Single App Node, Single Redis Cluster
 <img width="837" height="522" alt="image" src="https://github.com/user-attachments/assets/ca57bd27-cabe-4d83-9d43-86e158ee4a01" />
+
+#                                                               DESIGN - Multi App Node, Single Redis Cluster
+Usage of global redis key to ensure same hashing. This helps acheving global rate limit across multi node. 
+<img width="942" height="565" alt="image" src="https://github.com/user-attachments/assets/edd6f6af-8b3f-4518-b809-7eb6825fbf5e" />
+
+
 
 
 
