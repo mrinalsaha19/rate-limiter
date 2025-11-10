@@ -1,0 +1,21 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: ratelimiter-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+app:
+  redis:
+    host: localhost
+    port: 6379
+  ratelimit:
+    limit: 5
+    windowSeconds: 10
+  kafka:
+    topic.process: events.process
+    topic.deferred: events.deferred
