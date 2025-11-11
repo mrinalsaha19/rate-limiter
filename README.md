@@ -23,3 +23,47 @@ for i in $(seq 1 7); do
   echo
 done
 
+# REDIS LOCAL SET UP (for dev purpose):
+- choco install redis-64
+- redis-cli --version
+- mkdir C:\redis-cluster\node1\data
+  mkdir C:\redis-cluster\node2\data
+  mkdir C:\redis-cluster\node3\data
+  - C:\redis-cluster\node1\redis.conf
+    port 7000
+    cluster-enabled yes
+    cluster-config-file nodes.conf
+    cluster-node-timeout 5000
+    appendonly yes
+    dbfilename dump.rdb
+    dir C:\redis-cluster\node1\data
+  - C:\redis-cluster\node2\redis.conf
+    port 7001
+    cluster-enabled yes
+    cluster-config-file nodes.conf
+    cluster-node-timeout 5000
+    appendonly yes
+    dbfilename dump.rdb
+    dir C:\redis-cluster\node2\data
+  - C:\redis-cluster\node3\redis.conf
+    port 7001
+    cluster-enabled yes
+    cluster-config-file nodes.conf
+    cluster-node-timeout 5000
+    appendonly yes
+    dbfilename dump.rdb
+    dir C:\redis-cluster\node2\data
+  - Start all the 3 nodes
+     cd C:\redis-cluster\node1
+     redis-server redis.conf
+
+     cd C:\redis-cluster\node2
+     redis-server redis.conf
+
+     cd C:\redis-cluster\node3
+     redis-server redis.conf
+
+- create cluster
+  redis-cli --cluster create 127.0.0.1:7000 127.0.0.1:7001 127.0.0.1:7002 --cluster-replicas 0
+
+
