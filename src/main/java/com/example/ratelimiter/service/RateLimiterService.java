@@ -1,46 +1,62 @@
 package com.example.ratelimiter.service;
+
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+
 @Service
 public class RateLimiterService {
-    private final JedisPool jedisPool;
-    private String scriptSha;
-    @Value("${app.ratelimit.limit}")
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+    private String luaScriptText;
+    private DefaultRedisScript<List> redisScript;
+
+    @Value("${app.redis.rate-limit.limit}")
     private int limit;
-    @Value("${app.ratelimit.windowSeconds}")
+
+    @Value("${app.redis.rate-limit.windowSeconds}")
     private int windowSeconds;
+
     @Value("classpath:ratelimit.lua")
     private Resource luaScript;
-    public RateLimiterService(JedisPool jedisPool) {
-        this.jedisPool = jedisPool;
-    }
+
+    /*public RateLimiterService(StringRedisTemplate redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }*/
+
     @PostConstruct
     public void loadScript() throws IOException {
-        String script = new String(luaScript.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
-        try (Jedis j = jedisPool.getResource()) {
-            scriptSha = j.scriptLoad(script);
-            System.out.println("Loaded ratelimit.lua SHA: " + scriptSha);
-        }
+        // Read Lua script from classpath
+        luaScriptText = new String(luaScript.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+        redisScript = new DefaultRedisScript<>();
+        redisScript.setScriptText(luaScriptText);
+        redisScript.setResultType(List.class);
+        System.out.println("Loaded ratelimit.lua into memory (Lettuce mode)");
     }
+
     public Result checkAndIncrement(String key) {
-        try (Jedis j = jedisPool.getResource()) {
-            Object raw = j.evalsha(scriptSha, List.of(key), List.of(String.valueOf(limit), String.valueOf(windowSeconds)));
-            if (raw instanceof List) {
-                List<?> list = (List<?>) raw;
-                long allowedFlag = ((Number) list.get(0)).longValue();
-                long current = ((Number) list.get(1)).longValue();
-                return new Result(allowedFlag == 1, current);
-            } else {
-                return new Result(false, -1);
-            }
+        // Execute Lua atomically on the correct cluster node
+        List<?> raw = redisTemplate.execute(redisScript,
+                List.of(key),
+                String.valueOf(limit),
+                String.valueOf(windowSeconds));
+
+        if (raw != null && raw.size() >= 2) {
+            long allowedFlag = ((Number) raw.get(0)).longValue();
+            long current = ((Number) raw.get(1)).longValue();
+            return new Result(allowedFlag == 1, current);
         }
+        return new Result(false, -1);
     }
+
     public record Result(boolean allowed, long current) {}
 }

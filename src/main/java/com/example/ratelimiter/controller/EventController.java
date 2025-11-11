@@ -11,7 +11,7 @@ public class EventController {
     private final RateLimiterService rateLimiter;
     private final KafkaProducerService kafkaProducer;
 
-    @Value("${app.ratelimit.key}")
+    @Value("${app.redis.rate-limit.key}")
     private String rateLimiterKey;
     public EventController(RateLimiterService rateLimiter, KafkaProducerService kafkaProducer) {
         this.rateLimiter = rateLimiter;

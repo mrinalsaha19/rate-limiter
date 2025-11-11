@@ -1,3 +1,4 @@
+/*
 package com.example.ratelimiter.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -17,3 +18,4 @@ public class AppConfig {
         return new JedisPool(cfg, redisHost, redisPort);
     }
 }
+*/
