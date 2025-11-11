@@ -16,6 +16,7 @@ app:
   ratelimit:
     limit: 5
     windowSeconds: 10
+    key : ratelimiter:downstream-api
   kafka:
     topic.process: events.process
     topic.deferred: events.deferred
