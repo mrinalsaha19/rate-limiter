@@ -23,3 +23,10 @@ for i in $(seq 1 7); do
   echo
 done
 
+#  Note
+Its recomended to have 6 nodes for redis cluster with 3 master and 3 replicas for each master to achieve HA and resilient system.
+By default redis requires 3 master nodes under the redis claster. Redis uses Quorum based agreement machanism to heal up a node when its not reachable. 
+All Redis nodes are connected to eachother and they keep checking health of eachother with simple ping. When a node is not reachable by another node it marks the node as PFAIL(possible fail)
+and it broadcasts the message to the other nodes. The other nodes also do the same check and if majority nodes can not reach to a particular node then its marked as FAIL. 
+The node is marked as PFAIL to FAIL and its treated a dead in the cluster and therefore atleast 3 nodes are required to come out of quorum based agreement to replicate the dead node.
+
